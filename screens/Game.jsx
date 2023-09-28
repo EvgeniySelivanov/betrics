@@ -35,60 +35,54 @@ const Game = () => {
   const [isGameRun, setIsGameRun] = useState(false);
   const [rad, setRad] = useState(0);
   const [deg, setDeg] = useState(0);
-
-  const ballPosition = useRef(new Animated.ValueXY(0)).current;
-
-  const getRandom = () => {
-    let random = Math.floor(Math.random() * (300 - 1 + 1)) + 1;
-    return random;
-  };
+  const ballPosition = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
 
   const getTanDeg = (value) => {
     setRad((value * Math.PI) / 180);
     setDeg(value);
   };
 
-  useEffect(() => {
-    calculateEndPosition();
-  }, [rad]);
-
-  const calculateEndPosition = () => {
-    let endX=0;
+  const calculateEndPosition = (y, currentBounce) => {
+    let endX = 0;
     // Расчет конечных координат
     // Мяч достигнет правого края экрана
     if (deg > 0) {
-       endX = CONSTANTS.SCREEN_WIDTH / 2 - 25;
-    }else if(deg < 0){
-       endX = -CONSTANTS.SCREEN_WIDTH / 2 +25;
+      endX = CONSTANTS.SCREEN_WIDTH / 2 - 25;
+    } else if (deg < 0) {
+      endX = -CONSTANTS.SCREEN_WIDTH / 2 + 25;
+    } else if (deg === 0) {
+      endX = 0;
     }
-    else if(deg === 0){
-       endX = 0;
-    }
-
-    const endY = -CONSTANTS.BALL_POSITION.y - 25 + endX * Math.tan(rad);
+    const endY = y - CONSTANTS.BALL_POSITION.y - 25 + endX * Math.tan(rad);
     return { x: endX, y: endY };
   };
 
-  const endPosition = calculateEndPosition();
-  console.log('rad>>>>', rad);
-  console.log('Math.tan(rad)>>> ', Math.tan(rad));
-  console.log('endPosition>>> ', endPosition);
-
   const moveBall = () => {
-    if (isGameRun) {
-      Animated.timing(ballPosition, {
-        toValue: endPosition,
-        duration: CONSTANTS.GAME_SPEED, // Длительность анимации в миллисекундах
-        useNativeDriver: false, // Используем JavaScript анимацию
-        easing: Easing.linear,
-      }).start(setIsGameRun(false));
-    }
+    const endPosition = calculateEndPosition(ballPosition.y._value);
+    Animated.timing(ballPosition, {
+      toValue: endPosition,
+      duration: CONSTANTS.GAME_SPEED, // Длительность анимации в миллисекундах
+      useNativeDriver: false, // Используем JavaScript анимацию
+      easing: Easing.linear,
+    }).start(() => {
+      moveBallBounce();
+    });
   };
-
+  const moveBallBounce = () => {
+    const endPosition = calculateEndPosition(ballPosition.y._value);
+    Animated.timing(ballPosition, {
+      toValue: { x: endPosition.x * -1, y: endPosition.y },
+      duration: CONSTANTS.GAME_SPEED, // Длительность анимации в миллисекундах
+      useNativeDriver: false, // Используем JavaScript анимацию
+      easing: Easing.linear,
+    }).start(() => {
+      moveBall();
+    });
+  };
+ 
   const startGame = () => {
     setIsGameRun(true);
     moveBall();
-    console.log(isGameRun);
   };
   return (
     <TouchableWithoutFeedback onPress={startGame}>

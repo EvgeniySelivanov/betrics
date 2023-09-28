@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const RangeSlider = ({getTanDeg}) => {
+const RangeSlider = ({ getTanDeg }) => {
   const [value, setValue] = useState(0); // Изначальное значение в центре (0)
   const [isButtonPressed, setIsButtonPressed] = useState(false);
   const [isButtonPressed2, setIsButtonPressed2] = useState(false);
@@ -21,15 +21,18 @@ const RangeSlider = ({getTanDeg}) => {
   const handleButtonRelease2 = () => {
     setIsButtonPressed2(false);
   };
+  useEffect(() => {
     getTanDeg(value);
+  }, [value]);
+
   useEffect(() => {
     let interval;
     if (isButtonPressed) {
       interval = setInterval(() => {
-        if(value > -90){
-          setValue((value) => value - 1);}
-        
-      }, 70); // Интервал в миллисекундах для увеличения значения
+        if (value > -90) {
+          setValue((value) => value - 2);
+        }
+      }, 40); // Интервал в миллисекундах для увеличения значения
     } else {
       clearInterval(interval);
     }
@@ -37,22 +40,21 @@ const RangeSlider = ({getTanDeg}) => {
     return () => {
       clearInterval(interval);
     };
-  }, [isButtonPressed,value]);
+  }, [isButtonPressed, value]);
 
   useEffect(() => {
     let interval;
     if (isButtonPressed2) {
       interval = setInterval(() => {
-        if(value < 90)
-        setValue((value) => value + 1);
-      }, 70); // Интервал в миллисекундах для увеличения значения
+        if (value < 90) setValue((value) => value + 2);
+      }, 40); // Интервал в миллисекундах для увеличения значения
     } else {
       clearInterval(interval);
     }
     return () => {
       clearInterval(interval);
     };
-  }, [isButtonPressed2,value]);
+  }, [isButtonPressed2, value]);
 
   return (
     <View style={styles.container}>
@@ -61,7 +63,7 @@ const RangeSlider = ({getTanDeg}) => {
         onPressOut={handleButtonRelease}
         style={styles.button}
       >
-        <Text>-</Text>
+        <Text>Left</Text>
       </TouchableOpacity>
       <Text style={styles.value}>{value}</Text>
       <TouchableOpacity
@@ -69,7 +71,7 @@ const RangeSlider = ({getTanDeg}) => {
         onPressOut={handleButtonRelease2}
         style={styles.button}
       >
-        <Text>+</Text>
+        <Text>Right</Text>
       </TouchableOpacity>
     </View>
   );
@@ -82,9 +84,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    height: 150,
-    width: 150,
-    paddingHorizontal: 20,
+    height: 50,
+    width: 60,
+    paddingHorizontal: 10,
+    textAlign:'center',
     paddingVertical: 10,
     borderColor: 'green',
     borderWidth: 3,

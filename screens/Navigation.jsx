@@ -16,7 +16,6 @@ const Stack = createNativeStackNavigator();
         <Stack.Screen name="WebViewScreen" component={WebViewScreen}/>
         <Stack.Screen name="Game" component={Game} options={{ headerShown: false }}/>
         <Stack.Screen name="Menu" component={Menu} options={{ headerShown: false }}/>
-        
       </Stack.Navigator>
     </NavigationContainer>
   )
