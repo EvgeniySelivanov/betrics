@@ -7,7 +7,7 @@ export const CONSTANTS = {
   GOAL_POSITION:{x:Dimensions.get('window').width/2-Dimensions.get('window').width/4,y:0},
   BALL_POSITION: {
     x: Dimensions.get('window').width / 2 - 25,
-    y: Dimensions.get('window').height / 1.3 - 25,
+    y: Dimensions.get('window').height / 1.4 - 25,
   },
   BALL_DIAMETER: 50,
   GAME_VIBRO: false,

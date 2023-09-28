@@ -33,10 +33,16 @@ const ScoreText = styled.Text`
 `;
 
 const Game = () => {
-  const [isGameRun, setIsGameRun] = useState(false);
+  const contextValue = useContext(AppStateContext);
+  const { level, updateLevel, isGameRun, updateGame } = contextValue;
   const [rad, setRad] = useState(0);
   const [deg, setDeg] = useState(0);
-  const ballPosition = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const ballPosition = useRef(
+    new Animated.ValueXY({
+      x: 0,
+      y: 0,
+    })
+  ).current;
 
   const getTanDeg = (value) => {
     setRad((value * Math.PI) / 180);
@@ -59,39 +65,90 @@ const Game = () => {
   };
 
   const moveBall = () => {
-    const endPosition = calculateEndPosition(ballPosition.y._value);
-    Animated.timing(ballPosition, {
-      toValue: endPosition,
-      duration: CONSTANTS.GAME_SPEED, // Длительность анимации в миллисекундах
-      useNativeDriver: false, // Используем JavaScript анимацию
-      easing: Easing.linear,
-    }).start(() => {
-      moveBallBounce();
-    });
+    if (isGameRun&&ballPosition.y._value>-504) {
+      const endPosition = calculateEndPosition(ballPosition.y._value);
+      Animated.timing(ballPosition, {
+        toValue: endPosition,
+        duration: CONSTANTS.GAME_SPEED, // Длительность анимации в миллисекундах
+        useNativeDriver: false, // Используем JavaScript анимацию
+        easing: Easing.linear,
+      }).start(() => {
+        if (isGameRun) {
+          moveBallBounce();
+        }
+      });
+    }
   };
   const moveBallBounce = () => {
-    const endPosition = calculateEndPosition(ballPosition.y._value);
-    Animated.timing(ballPosition, {
-      toValue: { x: endPosition.x * -1, y: endPosition.y },
-      duration: CONSTANTS.GAME_SPEED, // Длительность анимации в миллисекундах
-      useNativeDriver: false, // Используем JavaScript анимацию
-      easing: Easing.linear,
-    }).start(() => {
-      moveBall();
+    if (isGameRun&&ballPosition.y._value>-504) {
+      const endPosition = calculateEndPosition(ballPosition.y._value);
+      Animated.timing(ballPosition, {
+        toValue: { x: endPosition.x * -1, y: endPosition.y },
+        duration: CONSTANTS.GAME_SPEED, // Длительность анимации в миллисекундах
+        useNativeDriver: false, // Используем JavaScript анимацию
+        easing: Easing.linear,
+      }).start(() => {
+        if (isGameRun) {
+          moveBall();
+        }
+      });
+    }
+  };
+  
+  //check colisions
+  useEffect(() => {
+    ballPosition.addListener((value) => {
+      const xPositionBall = value.x;
+      const yPositionBall = value.y;
+      console.log(value.y);
+      if (
+        xPositionBall >= -CONSTANTS.GOAL_WIDTH / 2 &&
+        xPositionBall <= CONSTANTS.GOAL_WIDTH / 2 &&
+        yPositionBall <= -504&&yPositionBall >= -550
+      ) {
+        resetGame(); // Вызывайте resetGame после попадания мяча в ворота
+        updateLevel((level) => level + 1);
+      }
+    });
+    return () => {
+      ballPosition.removeAllListeners();
+      
+    };
+  }, [ballPosition,level]);
+
+
+  const resetGame = async () => {
+    ballPosition.removeAllListeners();
+    ballPosition.stopAnimation();
+    await ballPosition.setValue({ x: 0, y: 0 });
+    updateGame(true);
+    // moveBall();
+  };
+  const gameOver = async () => {
+    await updateGame(false);
+    console.log('game over');
+    ballPosition.stopAnimation();
+    ballPosition.setValue({
+      x: 0,
+      y: 0,
     });
   };
- 
-  const startGame = () => {
-    setIsGameRun(true);
+  const startGame = async () => {
+    await updateGame(true);
+    console.log('start game');
+    await ballPosition.setValue({
+      x: 0,
+      y: 0,
+    });
     moveBall();
   };
   return (
     <TouchableWithoutFeedback onPress={startGame}>
       <Space source={bgImage}>
-        <ScoreText>Level:</ScoreText>
+        <ScoreText>Level: {level}</ScoreText>
         <StartMessage isGameRun={isGameRun} />
         <RangeSlider getTanDeg={getTanDeg} />
-        <Goal/>
+        <Goal />
         <Animated.View
           style={[
             { position: 'absolute' },
