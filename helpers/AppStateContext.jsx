@@ -2,16 +2,15 @@ import React, { createContext, useContext, useState } from 'react';
 import { CONSTANTS } from '../constants';
 export const AppStateContext = createContext();
 export const AppStateProvider = ({ children }) => {
-  const [bounce, setBounce] = useState(false);
+  const [level, setLevelUp] = useState(1);
 
-  const updateBounce = (newData) => {
-    console.log('useContext ');
-    setBounce(newData);
+  const updateLevel = (newData) => {
+    setLevelUp(newData);
   };
 
   const contextValue = {
-    bounce:bounce,
-    updateBounce:updateBounce,
+    level:level,
+    setLevelUp:setLevelUp,
   };
 
   return (

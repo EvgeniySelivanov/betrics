@@ -57,27 +57,34 @@ const RangeSlider = ({ getTanDeg }) => {
   }, [isButtonPressed2, value]);
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        onPressIn={decreaseValue}
-        onPressOut={handleButtonRelease}
-        style={styles.button}
-      >
-        <Text>Left</Text>
-      </TouchableOpacity>
-      <Text style={styles.value}>{value}</Text>
-      <TouchableOpacity
-        onPressIn={increaseValue}
-        onPressOut={handleButtonRelease2}
-        style={styles.button}
-      >
-        <Text>Right</Text>
-      </TouchableOpacity>
+    <View style={styles.main}>
+      <View style={styles.container}>
+        <TouchableOpacity
+          onPressIn={decreaseValue}
+          onPressOut={handleButtonRelease}
+          style={styles.button}
+        >
+          <Text>Left</Text>
+        </TouchableOpacity>
+        <Text style={styles.value}>{value}</Text>
+        <TouchableOpacity
+          onPressIn={increaseValue}
+          onPressOut={handleButtonRelease2}
+          style={styles.button}
+        >
+          <Text>Right</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  main:{
+    position:'absolute',
+    bottom:30,
+    left:30
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',

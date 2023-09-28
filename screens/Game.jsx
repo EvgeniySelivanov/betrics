@@ -15,6 +15,7 @@ import styled from 'styled-components/native';
 import StartMessage from '../components/StartMessage';
 import Ball from '../components/Ball';
 import RangeSlider from '../components/RangeSlider';
+import Goal from '../components/Goal';
 const bgImage = require('../assets/bgGame.png');
 const Space = styled(ImageBackground)`
   flex: 1;
@@ -24,8 +25,8 @@ const Space = styled(ImageBackground)`
 `;
 const ScoreText = styled.Text`
   position: absolute;
-  top: 43px;
-  left: 110px;
+  bottom: 23px;
+  right: 50px;
   color: #ffffff;
   font-size: 50px;
   font-weight: 700;
@@ -87,9 +88,10 @@ const Game = () => {
   return (
     <TouchableWithoutFeedback onPress={startGame}>
       <Space source={bgImage}>
-        <ScoreText>Level</ScoreText>
+        <ScoreText>Level:</ScoreText>
         <StartMessage isGameRun={isGameRun} />
         <RangeSlider getTanDeg={getTanDeg} />
+        <Goal/>
         <Animated.View
           style={[
             { position: 'absolute' },
