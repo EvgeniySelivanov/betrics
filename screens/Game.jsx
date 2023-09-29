@@ -38,16 +38,13 @@ let yPositionObtacles = Math.floor(Math.random() * (400 - 200 + 1)) + 200;
 let withObtaclesRandom=Math.floor(Math.random() * (CONSTANTS.SCREEN_WIDTH/2.5 - CONSTANTS.SCREEN_WIDTH/5 + 1)) + CONSTANTS.SCREEN_WIDTH/5;
 const Game = () => {
   const contextValue = useContext(AppStateContext);
-  const { deg, level, updateLevel, isGameRun, updateGame,updateDeg } = contextValue;
+  const {records, deg, level, updateLevel, isGameRun, updateGame,updateDeg,updateRec } = contextValue;
   const ballPosition = useRef(
     new Animated.ValueXY({
       x:0 ,
       y:0 ,
     })
   ).current;
-
-
-
 
   const calculateEndPosition = (y, currentBounce) => {
     const rad = (deg * Math.PI) / 180;
@@ -157,6 +154,10 @@ const Game = () => {
     yPositionObtacles = Math.floor(Math.random() * (400 - 200 + 1)) + 200;
     withObtaclesRandom=Math.floor(Math.random() * (CONSTANTS.SCREEN_WIDTH/2.5 - CONSTANTS.SCREEN_WIDTH/5 + 1)) + CONSTANTS.SCREEN_WIDTH/5;
      updateGame(false);
+     if(level>1){
+      updateRec([...records,level]);
+     }
+     
      updateLevel(0);
      updateDeg(0);
     console.log('game over');

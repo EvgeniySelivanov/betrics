@@ -7,6 +7,7 @@ import { AppStateContext } from '../helpers/AppStateContext';
 import PlayBtn from '../components/Btns/PlayBtn';
 import SettingBtn from '../components/Btns/SettingBtn';
 import ExitBtn from '../components/Btns/ExitBtn';
+import RecordsBtn from '../components/Btns/RecordsBtn';
 const bgImage = require('../assets/bgMenu.png');
 const Space = styled(ImageBackground)`
   flex: 1;
@@ -17,15 +18,6 @@ const Space = styled(ImageBackground)`
   align: center;
 `;
 
-const StyledText = styled.Text`
-  margin-top: 10px;
-  color: #d9ff00;
-  font-size: 30px;
-  font-weight: 700;
-  border: 2px #5105f5 solid;
-  padding: 7px;
-  border-radius: 5px;
-`;
 const StyledMenu = styled.Text`
   margin-top: 10px;
   color: #ffffff;
@@ -40,6 +32,9 @@ const Menu = () => {
   const play = () => {
     navigation.navigate('Game');
   };
+  const record = () => {
+    navigation.navigate('Record');
+  };
   // const setting = () => {
   //   navigation.navigate('Setting');
   // };
@@ -50,6 +45,7 @@ const Menu = () => {
     <Space source={bgImage}>
       <StyledMenu>Menu</StyledMenu>
       <PlayBtn onPress={play} text={'Play'} />
+      <RecordsBtn onPress={record} text={'Records'} />
       {/* <SettingBtn  text={'Setting'} /> */}
       <ExitBtn onPress={backAction} text={'Exit'}/>
     </Space>
