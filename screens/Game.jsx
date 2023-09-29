@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   ImageBackground,
   Easing,
+  findNodeHandle
 } from 'react-native';
 import { CONSTANTS } from '../constants';
 import { AppStateContext } from '../helpers/AppStateContext';
@@ -34,22 +35,19 @@ const ScoreText = styled.Text`
 `;
 let xPositionObtacles = Math.floor(Math.random() * (190 - 90 + 1)) + 90;
 let yPositionObtacles = Math.floor(Math.random() * (400 - 200 + 1)) + 200;
-
+let withObtaclesRandom=Math.floor(Math.random() * (CONSTANTS.SCREEN_WIDTH/2.5 - CONSTANTS.SCREEN_WIDTH/5 + 1)) + CONSTANTS.SCREEN_WIDTH/5;
 const Game = () => {
   const contextValue = useContext(AppStateContext);
   const { deg, level, updateLevel, isGameRun, updateGame,updateDeg } = contextValue;
   const ballPosition = useRef(
     new Animated.ValueXY({
-      x: 0,
-      y: 0,
+      x:0 ,
+      y:0 ,
     })
   ).current;
-  const obtaclesPosition = useRef(
-    new Animated.ValueXY({
-      x: 0,
-      y: 0,
-    })
-  ).current;
+
+
+
 
   const calculateEndPosition = (y, currentBounce) => {
     const rad = (deg * Math.PI) / 180;
@@ -66,16 +64,7 @@ const Game = () => {
     const endY = y - CONSTANTS.BALL_POSITION.y - 25 + endX * Math.tan(rad);
     return { x: endX, y: endY };
   };
-  const moveObtacles = () => {
-    if (isGameRun) {
-      Animated.timing(obtaclesPosition, {
-        toValue: { x: 0, y: 0 },
-        duration: CONSTANTS.GAME_SPEED, // Длительность анимации в миллисекундах
-        useNativeDriver: false, // Используем JavaScript анимацию
-        easing: Easing.linear,
-      }).start();
-    }
-  };
+
   const moveBall = () => {
     if (isGameRun && ballPosition.y._value > -504) {
       const endPosition = calculateEndPosition(ballPosition.y._value);
@@ -112,24 +101,30 @@ const Game = () => {
     ballPosition.addListener((value) => {
       const xPositionBall = value.x;
       const yPositionBall = value.y;
-      console.log('CONSTANTS.GOAL_WIDTH / 2', CONSTANTS.GOAL_WIDTH / 2);
-      console.log('value.y>>', value.y);
-      console.log('value.x>>', value.x);
-
+     let xFactBallPosition=CONSTANTS.BALL_POSITION.x+value.x;
+     let yFactBallPosition=CONSTANTS.BALL_POSITION.y+value.y;
+    //  console.log('value.x:',xFactBallPosition,'value.y:',yFactBallPosition);
       if (
         (xPositionBall <= -CONSTANTS.GOAL_WIDTH / 2 &&
           yPositionBall <= -504 &&
           yPositionBall >= -550) ||
         (xPositionBall >= CONSTANTS.GOAL_WIDTH / 2 &&
           yPositionBall <= -504 &&
-          yPositionBall >= -550)
+          yPositionBall >= -550)||
+          (
+            xFactBallPosition>=xPositionObtacles&&
+            xFactBallPosition<=xPositionObtacles+withObtaclesRandom&&
+            yFactBallPosition<=yPositionObtacles&&
+            yFactBallPosition>=yPositionObtacles-CONSTANTS.BALL_DIAMETER
+          )
       ) {
         gameOver();
-      } else if (
-        xPositionBall >= -CONSTANTS.GOAL_WIDTH / 2 &&
+      } 
+      if (
+       ( xPositionBall >= -CONSTANTS.GOAL_WIDTH / 2 &&
         xPositionBall <= CONSTANTS.GOAL_WIDTH / 2 &&
         yPositionBall <= -504 &&
-        yPositionBall >= -550
+        yPositionBall >= -550)&&isGameRun
       ) {
         resetGame();
         updateLevel((level) => level + 1);
@@ -145,23 +140,25 @@ const Game = () => {
     ballPosition.stopAnimation();
     xPositionObtacles = Math.floor(Math.random() * (190 - 90 + 1)) + 90;
     yPositionObtacles = Math.floor(Math.random() * (400 - 200 + 1)) + 200;
+    withObtaclesRandom=Math.floor(Math.random() * (CONSTANTS.SCREEN_WIDTH/2.5 - CONSTANTS.SCREEN_WIDTH/5 + 1)) + CONSTANTS.SCREEN_WIDTH/5;
     await ballPosition.setValue({ x: 0, y: 0 });
-    
     updateGame(true);
     console.log('reset game');
   };
   const gameOver = async () => {
     ballPosition.removeAllListeners();
     ballPosition.stopAnimation();
-    await ballPosition.setValue({
-      x: 0,
-      y: 0,
-    });
+   ballPosition.setValue({
+    x: 0,
+    y: 0,
+  });
+    
     xPositionObtacles = Math.floor(Math.random() * (190 - 90 + 1)) + 90;
     yPositionObtacles = Math.floor(Math.random() * (400 - 200 + 1)) + 200;
-    updateGame(false);
-    updateLevel(0);
-    updateDeg(0);
+    withObtaclesRandom=Math.floor(Math.random() * (CONSTANTS.SCREEN_WIDTH/2.5 - CONSTANTS.SCREEN_WIDTH/5 + 1)) + CONSTANTS.SCREEN_WIDTH/5;
+     updateGame(false);
+     updateLevel(0);
+     updateDeg(0);
     console.log('game over');
   };
   const startGame = async () => {
@@ -180,6 +177,7 @@ const Game = () => {
         <StartMessage isGameRun={isGameRun} />
         <RangeSlider />
         <Goal />
+
         <Animated.View
           style={[
             { position: 'absolute' },
@@ -188,17 +186,11 @@ const Game = () => {
         >
           <Ball />
         </Animated.View>
-        <Animated.View
-          style={[
-            { position: 'absolute' },
-            { transform: obtaclesPosition.getTranslateTransform() },
-          ]}
-        >
           <Obtacles
             yPositionObtacles={yPositionObtacles}
             xPositionObtacles={xPositionObtacles}
+            withObtaclesRandom={withObtaclesRandom}
           />
-        </Animated.View>
       </Space>
     </TouchableWithoutFeedback>
   );
