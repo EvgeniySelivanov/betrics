@@ -35,9 +35,9 @@ const Menu = () => {
   const record = () => {
     navigation.navigate('Record');
   };
-  // const setting = () => {
-  //   navigation.navigate('Setting');
-  // };
+  const setting = () => {
+    navigation.navigate('Setting');
+  };
   const backAction=()=>{
     BackHandler.exitApp();
   }
@@ -46,7 +46,7 @@ const Menu = () => {
       <StyledMenu>Menu</StyledMenu>
       <PlayBtn onPress={play} text={'Play'} />
       <RecordsBtn onPress={record} text={'Records'} />
-      {/* <SettingBtn  text={'Setting'} /> */}
+      <SettingBtn onPress={setting} text={'Setting'} />
       <ExitBtn onPress={backAction} text={'Exit'}/>
     </Space>
   );

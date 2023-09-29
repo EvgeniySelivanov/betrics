@@ -7,11 +7,9 @@ import {
   TouchableWithoutFeedback,
   ImageBackground,
   Easing,
-  findNodeHandle
 } from 'react-native';
 import { CONSTANTS } from '../constants';
 import { AppStateContext } from '../helpers/AppStateContext';
-import { Audio } from 'expo-av';
 import styled from 'styled-components/native';
 import StartMessage from '../components/StartMessage';
 import Ball from '../components/Ball';
@@ -38,7 +36,7 @@ let yPositionObtacles = Math.floor(Math.random() * (400 - 200 + 1)) + 200;
 let withObtaclesRandom=Math.floor(Math.random() * (CONSTANTS.SCREEN_WIDTH/2.5 - CONSTANTS.SCREEN_WIDTH/5 + 1)) + CONSTANTS.SCREEN_WIDTH/5;
 const Game = () => {
   const contextValue = useContext(AppStateContext);
-  const {records, deg, level, updateLevel, isGameRun, updateGame,updateDeg,updateRec } = contextValue;
+  const {records,gameSpeed, deg, level, updateLevel, isGameRun, updateGame,updateDeg,updateRec } = contextValue;
   const ballPosition = useRef(
     new Animated.ValueXY({
       x:0 ,
@@ -67,7 +65,7 @@ const Game = () => {
       const endPosition = calculateEndPosition(ballPosition.y._value);
       Animated.timing(ballPosition, {
         toValue: endPosition,
-        duration: CONSTANTS.GAME_SPEED, // Длительность анимации в миллисекундах
+        duration: gameSpeed, // Длительность анимации в миллисекундах
         useNativeDriver: false, // Используем JavaScript анимацию
         easing: Easing.linear,
       }).start(() => {
@@ -82,7 +80,7 @@ const Game = () => {
       const endPosition = calculateEndPosition(ballPosition.y._value);
       Animated.timing(ballPosition, {
         toValue: { x: endPosition.x * -1, y: endPosition.y },
-        duration: CONSTANTS.GAME_SPEED, // Длительность анимации в миллисекундах
+        duration: gameSpeed, // Длительность анимации в миллисекундах
         useNativeDriver: false, // Используем JavaScript анимацию
         easing: Easing.linear,
       }).start(() => {

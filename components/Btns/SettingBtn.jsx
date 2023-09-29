@@ -4,9 +4,10 @@ import { Feather } from '@expo/vector-icons';
 import {styles} from './styles';
 const SettingBtn = ({ onPress, text }) => {
   return (
-    <TouchableOpacity  style={styles.button}>
+    <TouchableOpacity onPress={onPress} style={styles.button}>
+      <Feather name="settings" size={30} color="#0890f0" />
       <Text style={styles.buttonText}>{text}</Text>
-      <Feather name="settings" size={30} color="white" />
+      
     </TouchableOpacity>
   );
 };

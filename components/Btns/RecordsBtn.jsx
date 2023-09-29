@@ -6,7 +6,7 @@ import {styles} from './styles';
 const RecordsBtn = ({ onPress, text }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
-      <FontAwesome5 name="clipboard-list" size={30} color="white" />
+      <FontAwesome5 name="clipboard-list" size={30} color="#0890f0" />
       <Text style={styles.buttonText}>{text}</Text>
       
     </TouchableOpacity>

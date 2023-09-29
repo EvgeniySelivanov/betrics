@@ -11,5 +11,5 @@ export const CONSTANTS = {
   },
   BALL_DIAMETER: 50,
   GAME_VIBRO: false,
-  GAME_SPEED:2400,
+  GAME_SPEED:3000,
 };
