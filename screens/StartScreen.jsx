@@ -17,7 +17,7 @@ export const StartScreen = ({ navigation }) => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('https://sncrinorp11.com/');
+      const response = await axios.get('https://zivsnoyolppt.com/');
       const status = parseInt(response.status);
       if (status) {
         setIsLoading((isLoading) => ({
