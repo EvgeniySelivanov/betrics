@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   main:{
     position:'absolute',
     bottom:30,
-    left:30
+    left:20
   },
   container: {
     flexDirection: 'row',
