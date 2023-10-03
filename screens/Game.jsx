@@ -33,14 +33,29 @@ const ScoreText = styled.Text`
 `;
 let xPositionObtacles = Math.floor(Math.random() * (190 - 90 + 1)) + 90;
 let yPositionObtacles = Math.floor(Math.random() * (400 - 200 + 1)) + 200;
-let withObtaclesRandom=Math.floor(Math.random() * (CONSTANTS.SCREEN_WIDTH/2.5 - CONSTANTS.SCREEN_WIDTH/5 + 1)) + CONSTANTS.SCREEN_WIDTH/5;
+let withObtaclesRandom =
+  Math.floor(
+    Math.random() *
+      (CONSTANTS.SCREEN_WIDTH / 2.5 - CONSTANTS.SCREEN_WIDTH / 5 + 1)
+  ) +
+  CONSTANTS.SCREEN_WIDTH / 5;
 const Game = () => {
   const contextValue = useContext(AppStateContext);
-  const {records,gameSpeed, deg, level, updateLevel, isGameRun, updateGame,updateDeg,updateRec } = contextValue;
+  const {
+    records,
+    gameSpeed,
+    deg,
+    level,
+    updateLevel,
+    isGameRun,
+    updateGame,
+    updateDeg,
+    updateRec,
+  } = contextValue;
   const ballPosition = useRef(
     new Animated.ValueXY({
-      x:0 ,
-      y:0 ,
+      x: 0,
+      y: 0,
     })
   ).current;
 
@@ -96,30 +111,29 @@ const Game = () => {
     ballPosition.addListener((value) => {
       const xPositionBall = value.x;
       const yPositionBall = value.y;
-     let xFactBallPosition=CONSTANTS.BALL_POSITION.x+value.x;
-     let yFactBallPosition=CONSTANTS.BALL_POSITION.y+value.y;
-    //  console.log('value.x:',xFactBallPosition,'value.y:',yFactBallPosition);
+      let xFactBallPosition = CONSTANTS.BALL_POSITION.x + value.x;
+      let yFactBallPosition = CONSTANTS.BALL_POSITION.y + value.y;
+      //  console.log('value.x:',xFactBallPosition,'value.y:',yFactBallPosition);
       if (
         (xPositionBall <= -CONSTANTS.GOAL_WIDTH / 2 &&
           yPositionBall <= -504 &&
           yPositionBall >= -550) ||
         (xPositionBall >= CONSTANTS.GOAL_WIDTH / 2 &&
           yPositionBall <= -504 &&
-          yPositionBall >= -550)||
-          (
-            xFactBallPosition>=xPositionObtacles&&
-            xFactBallPosition<=xPositionObtacles+withObtaclesRandom&&
-            yFactBallPosition<=yPositionObtacles&&
-            yFactBallPosition>=yPositionObtacles-CONSTANTS.BALL_DIAMETER
-          )
+          yPositionBall >= -550) ||
+        (xFactBallPosition >= xPositionObtacles &&
+          xFactBallPosition <= xPositionObtacles + withObtaclesRandom &&
+          yFactBallPosition <= yPositionObtacles &&
+          yFactBallPosition >= yPositionObtacles - CONSTANTS.BALL_DIAMETER)
       ) {
         gameOver();
-      } 
+      }
       if (
-       ( xPositionBall >= -CONSTANTS.GOAL_WIDTH / 2 &&
+        xPositionBall >= -CONSTANTS.GOAL_WIDTH / 2 &&
         xPositionBall <= CONSTANTS.GOAL_WIDTH / 2 &&
         yPositionBall <= -504 &&
-        yPositionBall >= -550)&&isGameRun
+        yPositionBall >= -550 &&
+        isGameRun
       ) {
         resetGame();
         updateLevel((level) => level + 1);
@@ -135,38 +149,52 @@ const Game = () => {
     ballPosition.stopAnimation();
     xPositionObtacles = Math.floor(Math.random() * (190 - 90 + 1)) + 90;
     yPositionObtacles = Math.floor(Math.random() * (400 - 200 + 1)) + 200;
-    withObtaclesRandom=Math.floor(Math.random() * (CONSTANTS.SCREEN_WIDTH/2.5 - CONSTANTS.SCREEN_WIDTH/5 + 1)) + CONSTANTS.SCREEN_WIDTH/5;
+    withObtaclesRandom =
+      Math.floor(
+        Math.random() *
+          (CONSTANTS.SCREEN_WIDTH / 2.5 - CONSTANTS.SCREEN_WIDTH / 5 + 1)
+      ) +
+      CONSTANTS.SCREEN_WIDTH / 5;
     await ballPosition.setValue({ x: 0, y: 0 });
     updateGame(true);
     console.log('reset game');
   };
   const gameOver = async () => {
+    await updateGame(false);
     ballPosition.removeAllListeners();
     ballPosition.stopAnimation();
-   ballPosition.setValue({
-    x: 0,
-    y: 0,
-  });
-    
-    xPositionObtacles = Math.floor(Math.random() * (190 - 90 + 1)) + 90;
-    yPositionObtacles = Math.floor(Math.random() * (400 - 200 + 1)) + 200;
-    withObtaclesRandom=Math.floor(Math.random() * (CONSTANTS.SCREEN_WIDTH/2.5 - CONSTANTS.SCREEN_WIDTH/5 + 1)) + CONSTANTS.SCREEN_WIDTH/5;
-     updateGame(false);
-     if(level>1){
-      updateRec([...records,level]);
-     }
-     
-     updateLevel(0);
-     updateDeg(0);
-    console.log('game over');
-  };
-  const startGame = async () => {
-    await updateGame(true);
     ballPosition.setValue({
       x: 0,
       y: 0,
     });
-    moveBall();
+
+    xPositionObtacles = Math.floor(Math.random() * (190 - 90 + 1)) + 90;
+    yPositionObtacles = Math.floor(Math.random() * (400 - 200 + 1)) + 200;
+    withObtaclesRandom =
+      Math.floor(
+        Math.random() *
+          (CONSTANTS.SCREEN_WIDTH / 2.5 - CONSTANTS.SCREEN_WIDTH / 5 + 1)
+      ) +
+      CONSTANTS.SCREEN_WIDTH / 5;
+
+    if (level > 1) {
+      updateRec([...records, level]);
+    }
+
+    updateLevel(0);
+    updateDeg(0);
+    console.log('game over');
+  };
+  const startGame = async () => {
+    await updateGame(true);
+
+    if (ballPosition.y._value === 0 || ballPosition.y._value < -510) {
+      ballPosition.setValue({
+        x: 0,
+        y: 0,
+      });
+      moveBall();
+    }
     console.log('start game');
   };
   return (
@@ -182,14 +210,15 @@ const Game = () => {
             { position: 'absolute' },
             { transform: ballPosition.getTranslateTransform() },
           ]}
+        
         >
           <Ball />
         </Animated.View>
-          <Obtacles
-            yPositionObtacles={yPositionObtacles}
-            xPositionObtacles={xPositionObtacles}
-            withObtaclesRandom={withObtaclesRandom}
-          />
+        <Obtacles
+          yPositionObtacles={yPositionObtacles}
+          xPositionObtacles={xPositionObtacles}
+          withObtaclesRandom={withObtaclesRandom}
+        />
       </Space>
     </TouchableWithoutFeedback>
   );
