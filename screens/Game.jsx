@@ -186,9 +186,8 @@ const Game = () => {
     console.log('game over');
   };
   const startGame = async () => {
-    await updateGame(true);
-
-    if (ballPosition.y._value === 0 || ballPosition.y._value < -510) {
+    if (ballPosition.y._value === 0 || ballPosition.y._value < -504) {
+      updateGame(true);
       ballPosition.setValue({
         x: 0,
         y: 0,
